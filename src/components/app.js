@@ -1,14 +1,33 @@
 import React from 'react';
 import '../assets/css/app.scss';
 import logo from '../assets/images/logo.svg';
+import SearchBar from './SearchBar'
+// import axios from 'axios';
+import unsplash from '../api/unsplash'
+import ImageList from './ImageList'
 
-const App = () => (
-    <div>
-        <div className="app">
-            <img src={logo} className="logo rotate"/>
-            <h1>Welcome To React</h1>
-        </div>
-    </div>
-);
+
+class App extends React.Component {
+    state ={images: []}
+
+  onSearchSubmit = async (term) =>  {
+      const response = await  unsplash.get('/search/photos', {
+            params: {query: term},
+        })
+        this.setState({
+            images: response.data.results
+    })
+}
+
+    render(){
+        return(
+        <div className= "ui container" style={{marginTop: "10px"}}>
+        <SearchBar onSubmit={this.onSearchSubmit}/>
+        <ImageList images ={this.state.images}/>
+     </div>
+        )
+}
+}
+
 
 export default App;
